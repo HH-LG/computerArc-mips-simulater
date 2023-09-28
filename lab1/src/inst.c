@@ -392,7 +392,7 @@ void lb(uint8_t rs, uint8_t rt, int16_t immediate)
     
     uint32_t vaddr = CURRENT_STATE.REGS[rs] + immediate;
     uint32_t val = mem_read_32(vaddr) & 0xFF;
-    NEXT_STATE.REGS[rt] = val > 0x80? 0xFFFFFF00 | val : val;
+    NEXT_STATE.REGS[rt] = val >= 0x80? 0xFFFFFF00 | val : val;
 }
 
 // 45.加载半字
@@ -403,7 +403,7 @@ void lh(uint8_t rs, uint8_t rt, int16_t immediate)
     
     uint32_t vaddr = CURRENT_STATE.REGS[rs] + immediate;
     uint32_t val = mem_read_32(vaddr) & 0xFFFF;
-    NEXT_STATE.REGS[rt] = val > 0x8000? 0xFFFF0000 | val : val;
+    NEXT_STATE.REGS[rt] = val >= 0x8000? 0xFFFF0000 | val : val;
 }
 
 // 46.加载字

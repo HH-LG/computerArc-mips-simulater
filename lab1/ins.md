@@ -51,19 +51,8 @@ BGEZAL
 
 ## J
 
-- `J`
-- `JAL`
+J, JAL
 
-## 其他
+## 其他指令
 
-注意，`MULT`,  `MFHI`,  `MFLO`,  `MTHI`,  `MTLO`,  `MULTU`,  `DIV`,  `DIVU`, 和  `SYSCALL` 这些指令不属于 I 型、R 型或 J 型，它们是特殊类型的指令。例如，`MULT`,  `MULTU`,  `DIV`, 和  `DIVU` 是乘法和除法指令，它们会使用特殊的寄存器（HI 和 LO）来存储结果。而  `SYSCALL` 是系统调用指令，用于在用户程序和操作系统之间进行通信。
-
-J JAL BEQ BNE BLEZ BGTZ
-ADDI ADDIU SLTI SLTIU ANDI ORI
-XORI LUI LB LH LW LBU
-LHU SB SH SW BLTZ BGEZ
-BLTZAL BGEZAL SLL SRL SRA SLLV
-SRLV SRAV JR JALR ADD ADDU
-SUB SUBU AND OR XOR NOR
-SLT SLTU MULT MFHI MFLO MTHI
-MTLO MULTU DIV DIVU
+`MULT`,  `MFHI`,  `MFLO`,  `MTHI`,  `MTLO`,  `MULTU`,  `DIV`,  `DIVU`, 和  `SYSCALL`属于R型，但比较特殊。

@@ -13,17 +13,17 @@ int32_t read_bits(uint32_t instruction, int start, int length)
 void rtype(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t shamt, uint8_t funct) {
 	// printf("in rtype:rs:%d, rt:%d, rd:%d, shamt:%d, funct:%d\n",rs,rt,rd,shamt,funct);
 	if(funct <= 7)	//根据funct判断是哪种移位指令
-		shifts(rs, rt, rd, shamt, funct);
+		r_shift(rs, rt, rd, shamt, funct);
 	else if( (funct >= 24 && funct <= 27) || (funct >= 32 && funct <= 35) )
-		arithmetic(rs, rt, rd, funct);
+		r_arithmetic(rs, rt, rd, funct);
 	else if(funct >= 36 && funct <= 39)
-		logical(rs, rt, rd, funct);
+		r_logical(rs, rt, rd, funct);
 	else if(funct == 42 || funct == 43)
-		conditional(rs, rt, rd, funct);
+		r_conditional(rs, rt, rd, funct);
 	else if(funct == 8 || funct == 9)
-		rtype_jump(rs, rd, funct);
+		r_jump(rs, rd, funct);
 	else if(funct >= 16  && funct <= 19)
-		rtype_lo_hi(rs, rd, funct);
+		r_lo_hi(rs, rd, funct);
 	else if(funct == 12)
 	{
 		syscall();
@@ -35,11 +35,11 @@ void rtype(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t shamt, uint8_t funct) {
 // i型指令
 void itype(uint8_t op, uint8_t rs, uint8_t rt, int16_t imm) {
 	if(op >= 4 && op <= 7)	//根据op判断是哪种分支指令
-		itype_branches(op, rs, rt, imm);
+		i_branches(op, rs, rt, imm);
 	else if(op >= 8 && op <= 15)
-		itype_arithmetic(op, rs, rt, imm);
+		i_arithmetic(op, rs, rt, imm);
 	else if(op >= 32 && op <= 43) 
-		mem_load_store(op, rs, rt, imm);
+		i_mem(op, rs, rt, imm);
     else
         ;
 }
@@ -57,7 +57,7 @@ void jtype(uint8_t op, uint32_t target) {
 }
 
 // 移位指令
-void shifts(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t shamt, uint8_t funct) {
+void r_shift(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t shamt, uint8_t funct) {
 	switch(funct) {	//根据funct判断是哪种移位指令
 		case SLL:
 			sll(rt, rd, shamt);
@@ -81,7 +81,7 @@ void shifts(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t shamt, uint8_t funct) {
 }
 
 // 算数指令
-void arithmetic(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t funct) {
+void r_arithmetic(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t funct) {
 	switch(funct) {	//根据funct判断是哪种算数指令
 		case ADD:
 			add(rs, rt, rd);
@@ -111,7 +111,7 @@ void arithmetic(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t funct) {
 }
 
 // 逻辑指令
-void logical(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t funct) {
+void r_logical(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t funct) {
 	switch(funct) {	//根据funct判断是哪种逻辑指令
 		case AND:
 			and(rs, rt, rd);
@@ -129,7 +129,7 @@ void logical(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t funct) {
 }
 
 // 条件指令
-void conditional(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t funct) {
+void r_conditional(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t funct) {
 	switch(funct) {	//根据funct判断是哪种条件指令
 		case SLT:
 			slt(rs, rt, rd);
@@ -141,7 +141,7 @@ void conditional(uint8_t rs, uint8_t rt, uint8_t rd, uint8_t funct) {
 }
 
 // r型跳转指令
-void rtype_jump(uint8_t rs, uint8_t rd, uint8_t funct) {
+void r_jump(uint8_t rs, uint8_t rd, uint8_t funct) {
 	switch(funct) {	//根据funct判断是哪种r型跳转指令
 		case JR:
 			jr(rs);
@@ -153,7 +153,7 @@ void rtype_jump(uint8_t rs, uint8_t rd, uint8_t funct) {
 }
 
 // r型与hi，lo相关指令
-void rtype_lo_hi(uint8_t rs, uint8_t rd, uint8_t funct) {
+void r_lo_hi(uint8_t rs, uint8_t rd, uint8_t funct) {
 	switch(funct) {	//根据funct判断是哪种指令
 		case MFHI:
 			mfhi(rd);
@@ -189,7 +189,7 @@ void itype_jump(uint8_t rs, uint8_t rt, int16_t imm) {
 }
 
 // i型算数指令
-void itype_arithmetic(uint8_t op, uint8_t rs, uint8_t rt, int16_t imm) {
+void i_arithmetic(uint8_t op, uint8_t rs, uint8_t rt, int16_t imm) {
 	switch(op) {	//根据op判断是哪种算数指令
 		case ADDI:
 			addi(rs, rt, imm);
@@ -219,7 +219,7 @@ void itype_arithmetic(uint8_t op, uint8_t rs, uint8_t rt, int16_t imm) {
 }
 
 // i型分支指令
-void itype_branches(uint8_t op, uint8_t rs, uint8_t rt, int16_t imm) {
+void i_branches(uint8_t op, uint8_t rs, uint8_t rt, int16_t imm) {
 	switch(op) { //根据op判断是哪种分支指令
 		case BEQ:
 			beq(rs, rt, imm);
@@ -237,7 +237,7 @@ void itype_branches(uint8_t op, uint8_t rs, uint8_t rt, int16_t imm) {
 }
 
 // i型访存指令
-void mem_load_store(uint8_t op, uint8_t base, uint8_t rt, int16_t imm) {
+void i_mem(uint8_t op, uint8_t base, uint8_t rt, int16_t imm) {
 	switch(op) { //根据op判断是哪种访存指令
 		case LB:
 			lb(base, rt, imm);
@@ -295,17 +295,24 @@ void process_instruction()
     // 初始化J型
     target = read_bits(instruction, 0, 26);
 
-    if(op == 0){
-        rtype(rs, rt, rd, shamt, funct);
-    }
-    else if(op == 1){
-        itype_jump(rs, rt, immediate);
-    }
-    else if(op == 2 || op == 3){
-        jtype(op, target);
-    }
-    else{
-        itype(op, rs, rt, immediate);
-    }
-    NEXT_STATE.PC += 4;	//PC+4
+	// 执行指令
+	switch (op)
+	{
+	case 0:		// R型
+		rtype(rs, rt, rd, shamt, funct);
+		break;
+	case 1:		// I型特殊跳转指令
+		itype_jump(rs, rt, immediate);
+		break;
+	case 2:		// J型
+	case 3:
+		jtype(op, target);
+		break;
+	default:	// I型
+		itype(op, rs, rt, immediate);
+		break;
+	}
+
+	// 更新PC
+    NEXT_STATE.PC += 4;	
 }
